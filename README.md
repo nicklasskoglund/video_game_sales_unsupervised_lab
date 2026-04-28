@@ -8,7 +8,7 @@
 
 This is a group lab project in Unsupervised Machine Learning. The goal is **not** to find a "right" answer, but to experiment with clustering and dimensionality reduction techniques and interpret what we find.
 
-We use the [Video Game Sales with Ratings dataset from Kaggle](https://www.kaggle.com/datasets/gregorut/videogamesales) which contains sales data for over 16,000 games across platforms, genres, regions and review scores.
+We use the [Video Game Sales with Ratings dataset from Kaggle](https://www.kaggle.com/datasets/rush4ratio/video-game-sales-with-ratings) which contains sales data for over 16,000 games across platforms, genres, regions and review scores.
 
 ---
 
@@ -49,16 +49,16 @@ video_game_sales_unsupervised_lab/
 
 ## 📦 Dataset
 
-**Source:** [Kaggle — Video Game Sales with Ratings](https://www.kaggle.com/datasets/gregorut/videogamesales)
+**Source:** [Kaggle — Video Game Sales with Ratings](https://www.kaggle.com/datasets/rush4ratio/video-game-sales-with-ratings)
 
-Download `vgsales.csv` and place it in the `data/` folder.
+Download the CSV and rename it to `vgsales.csv`, then place it in the `data/` folder.
 
 **Key columns:**
 | Column | Description |
 |---|---|
 | `Name` | Game title |
 | `Platform` | Console/platform (PS2, Wii, X360 ...) |
-| `Year` | Release year |
+| `Year_of_Release` | Release year |
 | `Genre` | Game genre |
 | `Publisher` | Publisher name |
 | `NA_Sales` | North America sales (millions) |
@@ -67,7 +67,10 @@ Download `vgsales.csv` and place it in the `data/` folder.
 | `Other_Sales` | Rest of world sales (millions) |
 | `Global_Sales` | Total global sales (millions) |
 | `Critic_Score` | Metacritic score (0–100) |
+| `Critic_Count` | Number of critic reviews |
 | `User_Score` | User score (0–10, stored as string!) |
+| `User_Count` | Number of user reviews |
+| `Developer` | Game developer |
 | `Rating` | ESRB rating |
 
 ---
@@ -87,7 +90,7 @@ venv\Scripts\activate           # Windows
 # Install dependencies
 pip install -r requirements.txt
 
-# Download dataset from Kaggle and place it in data/
+# Download dataset from Kaggle, rename to vgsales.csv and place in data/
 # data/vgsales.csv
 
 # Run the full pipeline
@@ -103,10 +106,11 @@ jupyter notebook notebooks/01_eda.ipynb
 
 | Issue | Column | Solution |
 |---|---|---|
-| ~40% missing values | `Critic_Score` | Analyze with & without imputation |
-| Stored as string `"tbd"` | `User_Score` | Convert to float, drop "tbd" rows |
-| 30+ unique platforms | `Platform` | Group into platform generations |
-| Skewed toward 1990–2010 | `Year` | Filter or normalize per era |
+| ~51% missing values | `Critic_Score` | Analyze only subset with scores |
+| ~40% missing values | `User_Score` | Analyze only subset with scores |
+| Stored as string with `"tbd"` | `User_Score` | Convert to float, coerce "tbd" to NaN |
+| 31 unique platforms | `Platform` | Group into platform generations |
+| Data sparse after 2015 | `Year_of_Release` | Dataset collected Dec 2016 — recent years incomplete |
 
 ---
 
