@@ -49,7 +49,7 @@ def load_and_clean(path: str) -> pd.DataFrame:
     print(f"   Raw shape: {df.shape}")
 
     # Drop rows missing critical columns
-    df.dropna(subset=["Year", "Publisher"], inplace=True)
+    df.dropna(subset=["Year_of_Release", "Publisher"], inplace=True)
 
     # Fix User_Score: "tbd" → NaN, then cast to float
     df["User_Score"] = pd.to_numeric(df["User_Score"], errors="coerce")
@@ -57,10 +57,10 @@ def load_and_clean(path: str) -> pd.DataFrame:
     df["User_Score_scaled"] = df["User_Score"] * 10
 
     # Year as int
-    df["Year"] = df["Year"].astype(int)
+    df["Year_of_Release"] = df["Year_of_Release"].astype(int)
 
     # Remove obvious data errors
-    df = df[df["Year"] >= 1980]
+    df = df[df["Year_of_Release"] >= 1980]
     df = df[df["Global_Sales"] > 0]
 
     print(f"   Clean shape: {df.shape}")
@@ -83,7 +83,7 @@ def run_eda(df: pd.DataFrame):
     axes[0].set_xlabel("Sales (M)")
 
     # --- Sales over time ---
-    year_sales = df.groupby("Year")["Global_Sales"].sum()
+    year_sales = df.groupby("Year_of_Release")["Global_Sales"].sum()
     axes[1].plot(year_sales.index, year_sales.values, marker="o", markersize=3, linewidth=1.5)
     axes[1].set_title("Global Sales Over Time")
     axes[1].set_xlabel("Year")
@@ -280,7 +280,7 @@ def experiment_3_hierarchical_pca(df: pd.DataFrame):
 
     features = ["NA_ratio", "EU_ratio", "JP_ratio", "Other_ratio",
                 "Global_Sales", "Genre_encoded"]
-    df_sub = df[features + ["Name", "Genre", "Year"]].dropna()
+    df_sub = df[features + ["Name", "Genre", "Year_of_Release"]].dropna()
 
     # Sample for dendrogram readability
     sample = df_sub.sample(min(300, len(df_sub)), random_state=RANDOM_STATE)
@@ -300,7 +300,7 @@ def experiment_3_hierarchical_pca(df: pd.DataFrame):
     plt.close()
 
     # PCA 2D scatter — full dataset
-    df_full = df[features + ["Genre", "Year"]].dropna()
+    df_full = df[features + ["Genre", "Year_of_Release"]].dropna()
     X_full  = scaler.fit_transform(df_full[features])
     pca     = PCA(n_components=2, random_state=RANDOM_STATE)
     components = pca.fit_transform(X_full)
@@ -308,7 +308,7 @@ def experiment_3_hierarchical_pca(df: pd.DataFrame):
 
     df_pca = pd.DataFrame(components, columns=["PC1", "PC2"], index=df_full.index)
     df_pca["Genre"] = df_full["Genre"].values
-    df_pca["Year"]  = df_full["Year"].values
+    df_pca["Year_of_Release"] = df_full["Year_of_Release"].values
 
     fig, axes = plt.subplots(1, 2, figsize=(16, 6))
 
@@ -327,7 +327,7 @@ def experiment_3_hierarchical_pca(df: pd.DataFrame):
     # Color by Era
     bins  = [1979, 1994, 2002, 2010, 2030]
     labels= ["Retro (≤94)", "5th–6th gen (95–02)", "7th gen (03–10)", "8th gen (11+)"]
-    df_pca["Era"] = pd.cut(df_pca["Year"], bins=bins, labels=labels)
+    df_pca["Era"] = pd.cut(df_pca["Year_of_Release"], bins=bins, labels=labels)
     era_colors = {"Retro (≤94)": "#e07b54", "5th–6th gen (95–02)": "#5b8db8",
                   "7th gen (03–10)": "#6abf8a", "8th gen (11+)": "#c97bbf"}
     for era, color in era_colors.items():
