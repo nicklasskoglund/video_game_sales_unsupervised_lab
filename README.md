@@ -14,36 +14,43 @@ We use the [Video Game Sales with Ratings dataset from Kaggle](https://www.kaggl
 
 ## 🧪 Experiments
 
-| # | Experiment | Technique | Question |
+| # | Experiment | Technique | Finding |
 |---|---|---|---|
-| 1 | Regional Sales Patterns | K-Means | What makes a game dominate in Japan vs USA vs EU? |
-| 2 | Critic vs User Score Outliers | DBSCAN | Who disagrees more — critics or players? |
-| 3 | Game Archetypes Through Time | Hierarchical Clustering + PCA | Can we find eras without looking at the year? |
-| 4 | Blockbusters vs Long Tail | DBSCAN | Are the best-selling games just anomalies? |
+| 1 | Regional Sales Patterns | K-Means | Three distinct markets: Japan, NA-dominated, EU-balanced |
+| 2 | Critic vs User Score Outliers | DBSCAN | 24 controversial games — review-bombing more common than nostalgia-voting |
+| 3 | Game Archetypes Through Time | Hierarchical Clustering + PCA | Eras NOT separable — regional preferences stable over time |
+| 4 | Blockbusters vs Long Tail | DBSCAN | 197 blockbuster anomalies — top sellers are statistical outliers, not a cluster |
 
 ---
 
 ## 📁 Project Structure
-
 ```
 video_game_sales_unsupervised_lab/
 │
-├── main.py                   # Runs the full pipeline
+├── main.py                        # Runs the full pipeline
 ├── README.md
 ├── requirements.txt
 │
 ├── data/
-│   └── vgsales.csv           # Download from Kaggle (see below)
+│   ├── vgsales.csv                      # Raw dataset downloaded from Kaggle
+│   ├── vgsales_clean.csv                # Cleaned data — duplicates removed, Year fixed, User_Score converted
+│   ├── vgsales_features.csv             # Feature engineered — regional ratios, platform generations, era labels
+│   ├── vgsales_clustered_new.csv        # Clustering results — K-Means cluster labels (K=2 and K=3) added
+│   ├── vgsales_dbscan_scores.csv        # Exp 2 results — DBSCAN labels on Critic vs User Score
+│   └── vgsales_dbscan_blockbusters.csv  # Exp 4 results — DBSCAN labels on Global Sales, blockbusters flagged as anomalies
 │
 ├── notebooks/
-│   ├── 01_eda.ipynb          # Data cleaning & Exploratory Data Analysis
-│   ├── 02_feature_engineering.ipynb
-│   ├── 03_clustering.ipynb   # K-Means + Hierarchical + PCA
-│   └── 04_extras.ipynb       # DBSCAN + extra experiments
+│   ├── 01_eda.ipynb                  # Data cleaning & Exploratory Data Analysis
+│   ├── 02_feature_engineering.ipynb  # Regional ratios, platform generations, era labels, encoding
+│   ├── 03_clustering.ipynb           # K-Means + Hierarchical + PCA (group member 1)
+│   ├── 03_clustering_new.ipynb       # K-Means + Hierarchical + PCA (group member 2)
+│   └── 04_extras.ipynb               # DBSCAN outlier detection — Experiment 2 & 4
 │
 └── outputs/
-    └── figures/              # Saved plots (auto-generated)
+    └── figures/                   # Saved plots (auto-generated)
 ```
+
+> **Note:** Two versions of notebook 03 exist — one per group member — to compare different approaches to the same clustering problem.
 
 ---
 
